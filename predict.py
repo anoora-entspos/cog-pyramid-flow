@@ -41,7 +41,7 @@ def download_weights(url: str, dest: str) -> None:
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
-        self.is_canonical = false
+        self.is_canonical = False
 
         model_files = [
             "pyramid-flow-model.tar",

@@ -41,7 +41,7 @@ def download_weights(url: str, dest: str) -> None:
 
 class Predictor(BasePredictor):
     def setup(self) -> None:
-        self.is_canonical = os.environ.get("SPACE_ID") == "Pyramid-Flow/pyramid-flow"
+        self.is_canonical = false
 
         model_files = [
             "pyramid-flow-model.tar",

@@ -43,17 +43,17 @@ class Predictor(BasePredictor):
     def setup(self) -> None:
         self.is_canonical = False
 
-        model_files = [
-            "pyramid-flow-model.tar",
-        ]
+        # model_files = [
+            # "pyramid-flow-model.tar",
+        # ]
 
-        for model_file in model_files:
-            url = BASE_URL + model_file
+        # for model_file in model_files:
+        # url = BASE_URL + model_file
 
-            filename = url.split("/")[-1]
-            dest_path = os.path.join(MODEL_CACHE, filename)
-            if not os.path.exists(dest_path.replace(".tar", "")):
-                download_weights(url, dest_path)
+        # filename = url.split("/")[-1] 
+        # dest_path = os.path.join(MODEL_CACHE, filename)
+            # if not os.path.exists(dest_path.replace(".tar", "")):
+                # download_weights(url, dest_path)
 
         self.model = PyramidDiTForVideoGeneration(
             MODEL_PATH,
@@ -134,8 +134,8 @@ class Predictor(BasePredictor):
                     prompt=prompt,
                     num_inference_steps=[20, 20, 20],
                     video_num_inference_steps=[10, 10, 10],
-                    height=768,
-                    width=1280,
+                    height=1280,
+                    width=768,
                     temp=temp,
                     guidance_scale=guidance_scale,
                     video_guidance_scale=video_guidance_scale,

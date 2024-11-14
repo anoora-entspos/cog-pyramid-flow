@@ -1,8 +1,7 @@
 # Prediction interface for Cog ⚙️
 # https://cog.run/python
-
+#prediciton via local model & weights
 import os
-import subprocess
 import time
 import torch
 from PIL import Image
@@ -10,55 +9,23 @@ from cog import BasePredictor, Input, Path
 from pyramid_dit import PyramidDiTForVideoGeneration
 from diffusers.utils import export_to_video
 
-# Constants
-MODEL_CACHE = "."
-BASE_URL = "https://weights.replicate.delivery/default/pyramid-flow/"
-MODEL_PATH = "pyramid-flow-model"
-MODEL_FILE = "pyramid-flow-model.tar"
-MODEL_REPO = "rain1011/pyramid-flow-sd3"
-MODEL_VARIANT = "diffusion_transformer_768p"
+ 
+CONFIG_PATH = "pyramid-flow-sd3/diffusion_transformer_768p/config.json"  
 MODEL_DTYPE = "bf16"
-
-
-def download_weights(url: str, dest: str) -> None:
-    # NOTE WHEN YOU EXTRACT SPECIFY THE PARENT FOLDER
-    start = time.time()
-    print("[!] Initiating download from URL: ", url)
-    print("[~] Destination path: ", dest)
-    if ".tar" in dest:
-        dest = os.path.dirname(dest)
-    command = ["pget", "-vf" + ("x" if ".tar" in url else ""), url, dest]
-    try:
-        print(f"[~] Running command: {' '.join(command)}")
-        subprocess.check_call(command, close_fds=False)
-    except subprocess.CalledProcessError as e:
-        print(
-            f"[ERROR] Failed to download weights. Command '{' '.join(e.cmd)}' returned non-zero exit status {e.returncode}."
-        )
-        raise
-    print("[+] Download completed in: ", time.time() - start, "seconds")
-
-
+current_directory = os.getcwd()
+model_path = os.path.join(current_directory, "pyramid-flow-sd3")
+model_name = "pyramid_flux"    # or pyramid_mmdit
+model_repo = "rain1011/pyramid-flow-sd3" if model_name == "pyramid_mmdit" else "rain1011/pyramid-flow-miniflux"
 class Predictor(BasePredictor):
     def setup(self) -> None:
         self.is_canonical = False
-
-        # model_files = [
-            # "pyramid-flow-model.tar",
-        # ]
-
-        # for model_file in model_files:
-        # url = BASE_URL + model_file
-
-        # filename = url.split("/")[-1] 
-        # dest_path = os.path.join(MODEL_CACHE, filename)
-            # if not os.path.exists(dest_path.replace(".tar", "")):
-                # download_weights(url, dest_path)
-
+        
+        # Verify the weights exist
         self.model = PyramidDiTForVideoGeneration(
-            MODEL_PATH,
-            MODEL_DTYPE,
-            model_variant=MODEL_VARIANT,
+            model_path,
+            model_name=model_name,
+            model_dtype=MODEL_DTYPE,
+            model_variant="diffusion_transformer_768p",
         )
 
         self.model.vae.to("cuda")

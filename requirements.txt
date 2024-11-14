@@ -1,3 +1,5 @@
+
+huggingface-hub
 sentencepiece
 tiktoken
 jsonlines
